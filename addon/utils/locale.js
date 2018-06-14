@@ -136,8 +136,16 @@ function getFlattenedTranslations(id, owner) {
   }
 
   let factory = owner.factoryFor(`locale:${id}/translations`);
-  let translations = factory && factory.class;
-  assign(result, withFlattenedKeys(translations || {}));
+  let translations = withFlattenedKeys((factory && factory.class) || {});
+
+  Object.keys(translations).forEach((key) => {
+    let value = translations[key];
+    if (value == null || value == '') {
+      delete translations[key];
+    }
+  });
+
+  assign(result, translations);
 
   return result;
 }
